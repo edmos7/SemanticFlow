@@ -6,6 +6,18 @@ This pilot adapts future scene representations from three personally recorded hu
 
 **Finding:** this implementation did not demonstrate useful action adaptation. SemFlow's mean improvement over a source-retention-only control was **0.0248%**. Every human-adapted model worsened sampled source action error relative to the frozen initialization. We paused this implementation; the broader research question remains open.
 
+## Our egocentric demonstrations and intended LIBERO targets
+
+One personally recorded chest-level RGB clip per target. The simulator previews below are **LIBERO-90 source-dataset demonstrations of the two component tasks**, not composed LIBERO-10 target rollouts or outputs of our adapted policy.
+
+| Human input used for adaptation | LIBERO component 1 — dataset example | LIBERO component 2 — dataset example |
+|---|---|---|
+| **Jar + carton → box**<br>![Human box demonstration](assets/demos/human-basket_two_foods.gif) | **Alphabet soup → basket**<br>![LIBERO soup component](assets/demos/libero-basket_two_foods-component-1.gif) | **Tomato sauce → basket**<br>![LIBERO sauce component](assets/demos/libero-basket_two_foods-component-2.gif) |
+| **Cream/grey cups → left/right plates**<br>![Human cup demonstration](assets/demos/human-mugs_two_plates.gif) | **White mug → left plate**<br>![LIBERO left plate component](assets/demos/libero-mugs_two_plates-component-1.gif) | **Yellow/white mug → right plate**<br>![LIBERO right plate component](assets/demos/libero-mugs_two_plates-component-2.gif) |
+| **White bowl → drawer; close it**<br>![Human drawer demonstration](assets/demos/human-bowl_drawer_close.gif) | **Black bowl → bottom drawer**<br>![LIBERO bowl component](assets/demos/libero-bowl_drawer_close-component-1.gif) | **Close bottom drawer**<br>![LIBERO closing component](assets/demos/libero-bowl_drawer_close-component-2.gif) |
+
+The intended LIBERO-10 targets combine each row's two components. See [exact target names, full human videos, and provenance](docs/demo_showcase.md). Human adaptation ran for these three mappings; the target rollout matrix was not completed.
+
 ## Experiment and results
 
 Starting from the same source-calibrated checkpoint, we compared frozen inference, standard future-feature adaptation, and semantic-state/transition adaptation (SemFlow). Each human task had one clip, one seed, and 60 updates per method. Only a shared rank-8 adapter with 1,605,632 parameters was adapted.
@@ -51,6 +63,6 @@ See [reproducibility and v0 limits](docs/reproducibility.md) for evidence conten
 
 **Simulation-only: no robot hardware was available.** The application allowed two weeks, with a deadline of 16 October 2026, 23:59 BST. GPU experiments used a cloud A100 80 GB. Measured human-training peak allocation was 7.27 GiB; this is not a minimum GPU requirement. See [project information, time, and compute](docs/project_constraints.md).
 
-This v0 includes research code, verified numerical evidence, a reproducible figure, and the experiment narrative. Video packaging and a clean-machine end-to-end training recipe remain pending. Human forecast losses measure fit to overlapping training-clip windows, not held-out human generalization. The planned multi-seed target rollout matrix was not run.
+This v0 includes research code, verified numerical evidence, a reproducible figure, and the experiment narrative. The three human videos and source-component previews are included. A clean-machine end-to-end training recipe remains pending. Human forecast losses measure fit to overlapping training-clip windows, not held-out human generalization. The planned multi-seed target rollout matrix was not run.
 
 Upstream EgoSteer notices are preserved under [licenses/egosteer](licenses/egosteer/NOTICE). Model and dataset access and licenses apply separately. No project-wide reuse license has been selected for v0.

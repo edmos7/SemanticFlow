@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "purpose": "Human inputs and LIBERO-90 source demonstration previews, not adapted policy rollouts",
+  "tasks": [
+    {
+      "id": "basket_two_foods",
+      "target_task": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "human_instruction": "Put both the food jar and the carton into the cardboard box.",
+      "source_video_sha256": "ad87cffc4890d5c35ba73c2b27c9dbdbfed5b580b070b30050d67a1cfd82e202",
+      "packaged_video_sha256": "5b818a9f33712b9936d4d9f875c0978e3344a0553a8760c3274ecb94b4999071",
+      "decoded_rgb_and_pts_sha256": "a3bbd0b224ddb976ab012afe9556e39128fdc219771e936f7ae2d10b05921d63",
+      "frames": 308,
+      "first_to_last_pts_seconds": 10.240333333333334,
+      "rgb_and_pts_unchanged": true,
+      "audio_included": false,
+      "components": [
+        {
+          "task": "LIVING_ROOM_SCENE2_pick_up_the_alphabet_soup_and_put_it_in_the_basket",
+          "episode_key": "data/demo_0",
+          "episode_sha256": "eb910e8b3014d90f0c76cae9e2cad428e078f23fb38b43eb95a4911bb019610e",
+          "instruction": "pick up the alphabet soup and put it in the basket",
+          "frames": 163,
+          "fps": 20,
+          "view": "agentview",
+          "image_orientation": "opengl vertically corrected to upright"
+        },
+        {
+          "task": "LIVING_ROOM_SCENE2_pick_up_the_tomato_sauce_and_put_it_in_the_basket",
+          "episode_key": "data/demo_0",
+          "episode_sha256": "7e435979fd022e9a7ec9668c49bb12326426fed461fa936b6e5b5ea43875ad5b",
+          "instruction": "pick up the tomato sauce and put it in the basket",
+          "frames": 103,
+          "fps": 20,
+          "view": "agentview",
+          "image_orientation": "opengl vertically corrected to upright"
+        }
+      ]
+    },
+    {
+      "id": "mugs_two_plates",
+      "target_task": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate",
+      "human_instruction": "Put the cream cup on the left plate and the grey cup on the right plate.",
+      "source_video_sha256": "e357317cf109aa1f3016587f555cf16e8d7ef007b03f215426c0bfa9b4abda6b",
+      "packaged_video_sha256": "25d5a31da5056d705ba9612aecf6b446242012eb5056054faf5a3021138c41f3",
+      "decoded_rgb_and_pts_sha256": "3c8ee8b889a811a0a32a99fcf9f2237fb4746df6b54157dbb316a108d3838c84",
+      "frames": 409,
+      "first_to_last_pts_seconds": 13.606011111111112,
+      "rgb_and_pts_unchanged": true,
+      "audio_included": false,
+      "components": [
+        {
+          "task": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate",
+          "episode_key": "data/demo_0",
+          "episode_sha256": "c53da13aa976a73c9f5c2c58f6d731a6421de9da1273c503b73ea0aa653ae38d",
+          "instruction": "put the white mug on the left plate",
+          "frames": 87,
+          "fps": 20,
+          "view": "agentview",
+          "image_orientation": "opengl vertically corrected to upright"
+        },
+        {
+          "task": "LIVING_ROOM_SCENE5_put_the_yellow_and_white_mug_on_the_right_plate",
+          "episode_key": "data/demo_0",
+          "episode_sha256": "6b24323ea3bc55d5cafabbedf7f07198a90304bce0bcb07832038cc845b4e9b6",
+          "instruction": "put the yellow and white mug on the right plate",
+          "frames": 120,
+          "fps": 20,
+          "view": "agentview",
+          "image_orientation": "opengl vertically corrected to upright"
+        }
+      ]
+    },
+    {
+      "id": "bowl_drawer_close",
+      "target_task": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "human_instruction": "Put the white bowl into the open drawer and close the drawer.",
+      "source_video_sha256": "2a86a24e10f0a5c31e49c505cd6cae629783a516dcbcf4d06577406183762ff9",
+      "packaged_video_sha256": "0b443989e0e04bd3499304ea5c5b114f33b4abd3ef588a1ef94d5258e193511e",
+      "decoded_rgb_and_pts_sha256": "4d025ff9f09ac1c3fca8f7e729bcb00c3a24bd0649584567e422af51f17cfa67",
+      "frames": 284,
+      "first_to_last_pts_seconds": 9.589855555555555,
+      "rgb_and_pts_unchanged": true,
+      "audio_included": false,
+      "components": [
+        {
+          "task": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet",
+          "episode_key": "data/demo_0",
+          "episode_sha256": "3b7a4130ccb7638a41cd0a8370d2587d87f9b377b25fc4d646efa0c659d2ad07",
+          "instruction": "put the black bowl in the bottom drawer of the cabinet",
+          "frames": 165,
+          "fps": 20,
+          "view": "agentview",
+          "image_orientation": "opengl vertically corrected to upright"
+        },
+        {
+          "task": "KITCHEN_SCENE4_close_the_bottom_drawer_of_the_cabinet",
+          "episode_key": "data/demo_0",
+          "episode_sha256": "4604034b6724893675dc665429d3d5e2439dd83b20284cbfc7a15ee97dc5d68e",
+          "instruction": "close the bottom drawer of the cabinet",
+          "frames": 136,
+          "fps": 20,
+          "view": "agentview",
+          "image_orientation": "opengl vertically corrected to upright"
+        }
+      ]
+    }
+  ],
+  "files": {
+    "basket_two_foods-contact-sheet.png": {
+      "sha256": "99a2771b0885b7073ae96ae5457d9a71f59194118d3ed195bd892b610266d805",
+      "bytes": 178652
+    },
+    "bowl_drawer_close-contact-sheet.png": {
+      "sha256": "755369c880486a3301b5769a9042485aefc497e9830abc58ef538d5d6320902c",
+      "bytes": 189668
+    },
+    "human-basket_two_foods.gif": {
+      "sha256": "bf60a3de01fb79b90ede0b55e04d4e15a2dcb6fc56ed44755f563328516cc86d",
+      "bytes": 1138141
+    },
+    "human-basket_two_foods.mp4": {
+      "sha256": "5b818a9f33712b9936d4d9f875c0978e3344a0553a8760c3274ecb94b4999071",
+      "bytes": 1946599
+    },
+    "human-bowl_drawer_close.gif": {
+      "sha256": "b56a7db463c8585075388263158482ada07df37fd9599022b5e748e069a1fda2",
+      "bytes": 1149024
+    },
+    "human-bowl_drawer_close.mp4": {
+      "sha256": "0b443989e0e04bd3499304ea5c5b114f33b4abd3ef588a1ef94d5258e193511e",
+      "bytes": 1705233
+    },
+    "human-mugs_two_plates.gif": {
+      "sha256": "d5377ed58c813355d428406aacead61c1fb3688b60cd3f95947cc2439bd2f1fa",
+      "bytes": 1609398
+    },
+    "human-mugs_two_plates.mp4": {
+      "sha256": "25d5a31da5056d705ba9612aecf6b446242012eb5056054faf5a3021138c41f3",
+      "bytes": 2417915
+    },
+    "libero-basket_two_foods-component-1.gif": {
+      "sha256": "c43d3942aed8ebb630ac0f19f49c784b3103638c21d6f7b5b0dc4f280c0c36c3",
+      "bytes": 1771401
+    },
+    "libero-basket_two_foods-component-2.gif": {
+      "sha256": "ff691bca95f60787e8db25870eeb231be336229978a75b61afb92c44be4296ec",
+      "bytes": 847156
+    },
+    "libero-bowl_drawer_close-component-1.gif": {
+      "sha256": "985d411c68a9eb55651bc5225b68b0903d96ee956856fb77b88e63c03126e4cb",
+      "bytes": 1777631
+    },
+    "libero-bowl_drawer_close-component-2.gif": {
+      "sha256": "dfa989b78e52fb71a7aebfbc20ee70d03009d1383d21b2c0fa152de810077841",
+      "bytes": 1528900
+    },
+    "libero-mugs_two_plates-component-1.gif": {
+      "sha256": "0ad28ce979cebc36c191bc8e1e04ac17bc5da87d9a9a5f8bd67604dc61ccb22b",
+      "bytes": 924791
+    },
+    "libero-mugs_two_plates-component-2.gif": {
+      "sha256": "1330eabd3b814da6636b36afece478f76a85f008e47b3478f762af263fa235c8",
+      "bytes": 1278051
+    },
+    "mugs_two_plates-contact-sheet.png": {
+      "sha256": "bf08d9be0f1f7a434214bec22c1de1bfb5654171e685143a9c94d2d2fa2cda99",
+      "bytes": 182842
+    }
+  }
+}
