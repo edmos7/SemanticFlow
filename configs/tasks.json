@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "provenance": {
+    "url": "https://github.com/Lifelong-Robot-Learning/LIBERO/blob/master/libero/libero/benchmark/libero_suite_task_map.py",
+    "verified_on": "2026-10-03",
+    "revision": null
+  },
+  "source_suite": "libero_90",
+  "target_suite": "libero_10",
+  "targets": [
+    {
+      "id": "basket_two_foods",
+      "task": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "instruction": "Put both the alphabet soup and the tomato sauce in the basket.",
+      "human_analogue": "Use two distinguishable food containers and one basket. Put each container into the basket, leaving both inside.",
+      "source_tasks": [
+        "LIVING_ROOM_SCENE2_pick_up_the_alphabet_soup_and_put_it_in_the_basket",
+        "LIVING_ROOM_SCENE2_pick_up_the_tomato_sauce_and_put_it_in_the_basket"
+      ]
+    },
+    {
+      "id": "mugs_two_plates",
+      "task": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate",
+      "instruction": "Put the white mug on the left plate and put the yellow and white mug on the right plate.",
+      "human_analogue": "Use two distinguishable mugs and two plates. Put the first mug on the left plate and the second mug on the right plate.",
+      "source_tasks": [
+        "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate",
+        "LIVING_ROOM_SCENE5_put_the_yellow_and_white_mug_on_the_right_plate"
+      ]
+    },
+    {
+      "id": "bowl_drawer_close",
+      "task": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "instruction": "Put the black bowl in the bottom drawer of the cabinet and close it.",
+      "human_analogue": "Begin with the bottom drawer open. Put a bowl inside and then close the drawer fully.",
+      "source_tasks": [
+        "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet",
+        "KITCHEN_SCENE4_close_the_bottom_drawer_of_the_cabinet"
+      ]
+    }
+  ]
+}

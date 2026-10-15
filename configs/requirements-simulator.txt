@@ -1,0 +1,22 @@
+# Separate Python 3.10/3.11 environment; no policy-training stack needed.
+# LIBERO's published environment uses robosuite 1.4.0 and bddl 1.0.1:
+# https://github.com/Lifelong-Robot-Learning/LIBERO/blob/master/requirements.txt
+# NumPy and scientific wheels below are Python 3.11-compatible pins, not an
+# upstream lockfile. Probe results must establish compatibility before use.
+numpy==1.26.4
+scipy==1.11.4
+numba==0.59.1
+mujoco==2.3.7
+robosuite==1.4.0
+bddl==1.0.1
+gym==0.25.2
+cloudpickle==2.2.1
+easydict==1.13
+PyYAML==6.0.2
+matplotlib==3.8.4
+Pillow==10.4.0
+opencv-python==4.10.0.84
+# Imported by robosuite's logger but omitted from its package metadata.
+termcolor==2.4.0
+# Imported by robosuite's transform utilities but absent from its metadata.
+future==1.0.0

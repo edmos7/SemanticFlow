@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "semflow"
+version = "0.1.0"
+description = "Research contracts for egocentric semantic-flow transfer"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+data = ["numpy>=1.26,<3", "h5py==3.15.1"]
+video = ["numpy>=1.26,<3", "av>=14,<17", "Pillow>=10,<13"]
+
+[project.scripts]
+semflow = "semflow.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

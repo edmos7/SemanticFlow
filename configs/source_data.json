@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "repository": "yifengzhu-hf/LIBERO-datasets",
+  "revision": "f13aa24a3da8c43c7225569f28c562979fa0e35a",
+  "libero_revision": "8f1084e3132a39270c3a13ebe37270a43ece2a01",
+  "suite": "libero_90",
+  "files": [
+    {
+      "task": "KITCHEN_SCENE4_close_the_bottom_drawer_of_the_cabinet",
+      "bytes": 581756590,
+      "sha256": "cc56be1b73999c72494cd715fc860a9a9be72c651fec2844ac207ea5f9712d90",
+      "bddl_sha256": "625d60f5028da5944f596df6a10b19d4cff3df2d5721650da671612e58f21527"
+    },
+    {
+      "task": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet",
+      "bytes": 662104593,
+      "sha256": "0e612a4a83f76b014d65983e4e5fa3969b59a77ab605d78d7b038f66645e849b",
+      "bddl_sha256": "ef4d7e68ed3a7c84141fdc881233d1981b0ddfa0ec35e06ff762e4f161599dc0"
+    },
+    {
+      "task": "LIVING_ROOM_SCENE2_pick_up_the_alphabet_soup_and_put_it_in_the_basket",
+      "bytes": 704118226,
+      "sha256": "292f1dd1ac87d6da3aaefec6949f598ce3d3e994c0689f28d183693fdacf722e",
+      "bddl_sha256": "2cebb752ffc9d2f2a06c3b257cbfc652df42905a12f597d7304f93bfdb42f50b"
+    },
+    {
+      "task": "LIVING_ROOM_SCENE2_pick_up_the_tomato_sauce_and_put_it_in_the_basket",
+      "bytes": 532040832,
+      "sha256": "c7110d18e23cd9a32f3da2b7c86002b7e69206ddcdd40b16d0bf0f8a32cc86b6",
+      "bddl_sha256": "741bf27d071004a840596227ae19d030f5a8439c6262909957daa7a971ea49e2"
+    },
+    {
+      "task": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate",
+      "bytes": 532578592,
+      "sha256": "2e246aca11f821019e8476b6e7bdafbf406729870cfbf0440c130d836600f421",
+      "bddl_sha256": "4ea39c7b56d60c046e8034d209b8fbd2e734ec4f525a214c031e42ee3683a5a4"
+    },
+    {
+      "task": "LIVING_ROOM_SCENE5_put_the_yellow_and_white_mug_on_the_right_plate",
+      "bytes": 537537810,
+      "sha256": "dfc434ce6a0915b7a0c998c301291714ff670ee152b604c2deabdb0ba6c9e41b",
+      "bddl_sha256": "a24811b2fb2350bf02ad2105395a2f62d102949cab39edfe9e6183b06e4e6409"
+    }
+  ]
+}

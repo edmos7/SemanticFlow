@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "seed": 42,
+  "steps": 600,
+  "batch_size": 1,
+  "learning_rate": 0.0003,
+  "adapter_learning_rate": 0.00005,
+  "weight_decay": 0.01,
+  "gradient_clip": 1.0,
+  "loss_weights": {"action": 1.0, "raw_future": 0.1, "reconstruction": 0.1, "noncollapse": 0.1},
+  "history_stride": 4,
+  "control_hz": 20,
+  "flow_steps": 10,
+  "validation_batches": 12,
+  "source_trials_per_task": 10,
+  "rollout_horizon": 400,
+  "checkpoint_interval": 100,
+  "training_timeout_seconds": 2400,
+  "evaluation_timeout_seconds": 1800,
+  "purpose": "Initial source-only calibration candidate, not target-selected or a claimed passing checkpoint"
+}

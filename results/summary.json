@@ -1,0 +1,499 @@
+{
+  "schema_version": 1,
+  "research_question": "Can semantic world information learned from an unlabeled human video improve an action model without human-to-robot action retargeting?",
+  "operational_test": "One-clip future-feature versus semantic-state/transition adaptation, measured on forecast fitting and held-out source-action diagnostics.",
+  "source_counts": {
+    "human_clips": 0,
+    "train": 248,
+    "validation": 52
+  },
+  "human_clips": [
+    {
+      "task": "mugs_two_plates",
+      "frames": 409,
+      "duration_seconds": 13.606011111111112,
+      "source_video_sha256": "e357317cf109aa1f3016587f555cf16e8d7ef007b03f215426c0bfa9b4abda6b",
+      "viewpoint": "chest-level egocentric RGB",
+      "asset": "assets/videos/human-mugs_two_plates.mp4"
+    },
+    {
+      "task": "basket_two_foods",
+      "frames": 308,
+      "duration_seconds": 10.240333333333334,
+      "source_video_sha256": "ad87cffc4890d5c35ba73c2b27c9dbdbfed5b580b070b30050d67a1cfd82e202",
+      "viewpoint": "chest-level egocentric RGB",
+      "asset": "assets/videos/human-basket_two_foods.mp4"
+    },
+    {
+      "task": "bowl_drawer_close",
+      "frames": 284,
+      "duration_seconds": 9.589855555555555,
+      "source_video_sha256": "2a86a24e10f0a5c31e49c505cd6cae629783a516dcbcf4d06577406183762ff9",
+      "viewpoint": "chest-level egocentric RGB",
+      "asset": "assets/videos/human-bowl_drawer_close.mp4"
+    }
+  ],
+  "adaptation_config": {
+    "batch_size": 1,
+    "flow_seed": 630000,
+    "gradient_clip": 1.0,
+    "human_evaluation": "training-window fit only",
+    "independent_resets": true,
+    "learning_rate": 5e-05,
+    "raw_weight": 0.1,
+    "retention_weight": 1.0,
+    "rollouts": 0,
+    "seed": 42,
+    "semantic_weight_bounds": [
+      0.0001,
+      1.0
+    ],
+    "updates": 60,
+    "weight_decay": 0.01,
+    "windows_per_clip": 12
+  },
+  "semantic_calibration": {
+    "bounds": [
+      0.0001,
+      1.0
+    ],
+    "source_training_gradient_norms": [
+      {
+        "raw": 0.0009432830447532071,
+        "semantic": 1.3431284969419037
+      },
+      {
+        "raw": 0.0009785667011752597,
+        "semantic": 1.4940764372651527
+      },
+      {
+        "raw": 0.0010738634980752171,
+        "semantic": 0.628519816349744
+      },
+      {
+        "raw": 0.0010998882099506615,
+        "semantic": 1.6287931540921559
+      },
+      {
+        "raw": 0.0010966237453676534,
+        "semantic": 0.7433642391766442
+      },
+      {
+        "raw": 0.0010649139394460587,
+        "semantic": 0.47260801031530303
+      }
+    ],
+    "unclipped_ratio": 0.0009915456622117005,
+    "weight": 0.0009915456622117005
+  },
+  "adaptation_parameters": 1605632,
+  "model_artifacts": {
+    "checkpoint_receipt_sha256": "e306b85536ef5262feb8bf0cb122d0b2dc7b3a4e084490c7b30fd801741f32a8",
+    "checkpoint_sha256": "040a9e637c6dd621bc27efe3e70c7a4b579c698e0e02e6a1c76c09b12d124d45",
+    "config": {
+      "batch_size": 1,
+      "flow_seed": 630000,
+      "gradient_clip": 1.0,
+      "learning_rate": 5e-05,
+      "raw_weight": 0.1,
+      "retention_weight": 1.0,
+      "seed": 42,
+      "semantic_weight_bounds": [
+        0.0001,
+        1.0
+      ],
+      "updates": 60,
+      "weight_decay": 0.01
+    },
+    "plan_sha256": "dc4e6e6d5c5b610daa4201bb54a36b904640001ddca8c04031c5902784725fa7",
+    "source_index_sha256": "45f87e0eb9b2ab90edb2e81d0e5945da26e8184c9285476f6b7f55895a879e38"
+  },
+  "environment": {
+    "gpu": "NVIDIA A100-SXM4-80GB",
+    "gpu_total_bytes": 85094825984,
+    "python": "3.12.14",
+    "torch_cuda": "13.0",
+    "packages": {
+      "Pillow": "12.1.1",
+      "flash-attn": "2.8.3",
+      "huggingface-hub": "1.31.0",
+      "hydra-core": "1.3.2",
+      "numpy": "2.1.3",
+      "omegaconf": "2.3.0",
+      "safetensors": "0.8.0",
+      "torch": "2.10.0+cu130",
+      "torchvision": "0.25.0+cu130",
+      "transformers": "5.6.2"
+    }
+  },
+  "decision": {
+    "human_increment_passed": false,
+    "implementation_audit_passed": true,
+    "incremental_human_gain_vs_retention": {
+      "semflow": {
+        "basket_two_foods": 0.000423262395129855,
+        "bowl_drawer_close": 0.00012605997965471296,
+        "mugs_two_plates": 0.0001943178204581722
+      },
+      "standard": {
+        "basket_two_foods": 0.00023716340333553842,
+        "bowl_drawer_close": 0.00029812506893638936,
+        "mugs_two_plates": 0.00030372797843353314
+      }
+    },
+    "limitations": "Engineering decision thresholds fixed before this diagnostic run, after prior outcomes were known; one adaptation seed, fixed source panel, no target-transfer test. A parity failure blocks interpretation and calls for repair.",
+    "mean_semflow_relative_gain": 0.0002478800650809134,
+    "recommendation": "pause_current_approach",
+    "useful_forecast_checks": {
+      "basket_two_foods": {
+        "comparisons": {
+          "shuffle": {
+            "action_rms": 0.03838114842927928,
+            "passed": false,
+            "relative_gain_of_predicted": 0.0014924822287585243,
+            "task_wins": 3
+          },
+          "static": {
+            "action_rms": 0.04456517276255099,
+            "passed": false,
+            "relative_gain_of_predicted": 0.008814852353866271,
+            "task_wins": 6
+          }
+        },
+        "passed": false
+      },
+      "bowl_drawer_close": {
+        "comparisons": {
+          "shuffle": {
+            "action_rms": 0.03877885395622873,
+            "passed": false,
+            "relative_gain_of_predicted": 0.0015675626216703881,
+            "task_wins": 3
+          },
+          "static": {
+            "action_rms": 0.04462768744632195,
+            "passed": false,
+            "relative_gain_of_predicted": 0.008972353588853132,
+            "task_wins": 6
+          }
+        },
+        "passed": false
+      },
+      "frozen": {
+        "comparisons": {
+          "shuffle": {
+            "action_rms": 0.03813344052613499,
+            "passed": false,
+            "relative_gain_of_predicted": 0.0012089592019949203,
+            "task_wins": 3
+          },
+          "static": {
+            "action_rms": 0.043374497036244644,
+            "passed": false,
+            "relative_gain_of_predicted": 0.008497513996934566,
+            "task_wins": 6
+          }
+        },
+        "passed": false
+      },
+      "mugs_two_plates": {
+        "comparisons": {
+          "shuffle": {
+            "action_rms": 0.03841912293950314,
+            "passed": false,
+            "relative_gain_of_predicted": 0.00148018263898402,
+            "task_wins": 3
+          },
+          "static": {
+            "action_rms": 0.04444826580429235,
+            "passed": false,
+            "relative_gain_of_predicted": 0.008682478498864032,
+            "task_wins": 6
+          }
+        },
+        "passed": false
+      }
+    },
+    "useful_forecast_passed": false
+  },
+  "source_simulation": {
+    "status": "failed",
+    "error_type": "TimeoutError",
+    "completed_source_trials": 17,
+    "successful_completed_trials": 0,
+    "interpretation": "Incomplete source evaluation, stopped by budget during a further trial; not a completed six-task success rate. No human-adapted target rollout matrix.",
+    "diagnostic_keys": [
+      "demonstration_replay",
+      "offline",
+      "optimizer_steps",
+      "paired_reset_equal",
+      "rollouts",
+      "seconds",
+      "source_train_action_distribution",
+      "task"
+    ]
+  },
+  "clock_audit": {
+    "passed": true,
+    "clock_only_explains_mismatch": true,
+    "rows": [
+      {
+        "task": "KITCHEN_SCENE4_close_the_bottom_drawer_of_the_cabinet",
+        "steps": 5,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_rms": 0.0
+      },
+      {
+        "task": "KITCHEN_SCENE4_close_the_bottom_drawer_of_the_cabinet",
+        "steps": 10,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.00682830810546875,
+        "indexed_vs_upstream_rms": 0.001930853555273691
+      },
+      {
+        "task": "KITCHEN_SCENE4_close_the_bottom_drawer_of_the_cabinet",
+        "steps": 20,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.013414382934570312,
+        "indexed_vs_upstream_rms": 0.0019338409461563879
+      },
+      {
+        "task": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet",
+        "steps": 5,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_rms": 0.0
+      },
+      {
+        "task": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet",
+        "steps": 10,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.004150390625,
+        "indexed_vs_upstream_rms": 0.0016212267033005095
+      },
+      {
+        "task": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet",
+        "steps": 20,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.011474609375,
+        "indexed_vs_upstream_rms": 0.001949098467281007
+      },
+      {
+        "task": "LIVING_ROOM_SCENE2_pick_up_the_alphabet_soup_and_put_it_in_the_basket",
+        "steps": 5,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_rms": 0.0
+      },
+      {
+        "task": "LIVING_ROOM_SCENE2_pick_up_the_alphabet_soup_and_put_it_in_the_basket",
+        "steps": 10,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.005859375,
+        "indexed_vs_upstream_rms": 0.0016593372675321931
+      },
+      {
+        "task": "LIVING_ROOM_SCENE2_pick_up_the_alphabet_soup_and_put_it_in_the_basket",
+        "steps": 20,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.005126953125,
+        "indexed_vs_upstream_rms": 0.0018311637731681664
+      },
+      {
+        "task": "LIVING_ROOM_SCENE2_pick_up_the_tomato_sauce_and_put_it_in_the_basket",
+        "steps": 5,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_rms": 0.0
+      },
+      {
+        "task": "LIVING_ROOM_SCENE2_pick_up_the_tomato_sauce_and_put_it_in_the_basket",
+        "steps": 10,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.005859375,
+        "indexed_vs_upstream_rms": 0.0017055850595137257
+      },
+      {
+        "task": "LIVING_ROOM_SCENE2_pick_up_the_tomato_sauce_and_put_it_in_the_basket",
+        "steps": 20,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.006072998046875,
+        "indexed_vs_upstream_rms": 0.0017662420382196149
+      },
+      {
+        "task": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate",
+        "steps": 5,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_rms": 0.0
+      },
+      {
+        "task": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate",
+        "steps": 10,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.005859375,
+        "indexed_vs_upstream_rms": 0.0016633744413544803
+      },
+      {
+        "task": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate",
+        "steps": 20,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.0140380859375,
+        "indexed_vs_upstream_rms": 0.002091000587321219
+      },
+      {
+        "task": "LIVING_ROOM_SCENE5_put_the_yellow_and_white_mug_on_the_right_plate",
+        "steps": 5,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_rms": 0.0
+      },
+      {
+        "task": "LIVING_ROOM_SCENE5_put_the_yellow_and_white_mug_on_the_right_plate",
+        "steps": 10,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.0048828125,
+        "indexed_vs_upstream_rms": 0.0017081168273902437
+      },
+      {
+        "task": "LIVING_ROOM_SCENE5_put_the_yellow_and_white_mug_on_the_right_plate",
+        "steps": 20,
+        "previous_max_abs": 0.0,
+        "matched_clock_vs_upstream_max_abs": 0.0,
+        "clock_only_vs_upstream_max_abs": 0.0,
+        "indexed_vs_upstream_max_abs": 0.005218505859375,
+        "indexed_vs_upstream_rms": 0.0016447117969196324
+      }
+    ]
+  },
+  "constraints": {
+    "hardware": "No robot hardware available; simulation only. Local CPU for preparation; cloud GPU for model execution.",
+    "challenge_window": "Two weeks; public-repository deadline 16 October 2026 23:59 BST.",
+    "main_adaptation_seed": 42,
+    "noise_seeds": [
+      4242,
+      4243,
+      4244,
+      4245
+    ],
+    "source_steps": 600,
+    "human_steps_total": 360,
+    "retention_steps": 60,
+    "human_held_out_videos": 0,
+    "target_task_rollout_trials": 0,
+    "large_run_host_cap_seconds": 3600,
+    "clock_audit_cap_seconds": 1200
+  },
+  "evidence": {
+    "human_standard_train": {
+      "report_sha256": "1e5aaf8f131490dac6f06bd51d57e4f0d0163cb6ad2b5deae4672bf4bb85c683",
+      "archive_sha256": "fc81ee69b4f9ccffe25bdeff1569f965bb872d28c3c5ad7f2e86a403a3060f8c",
+      "bundle_sha256": "1ad602fad7805d0abf40dd4d70202eb005c50d22805c3b74234a82be4093a15c",
+      "stage": "humanadapt-standard-train"
+    },
+    "human_standard_evaluate": {
+      "report_sha256": "1c41dc9771d89a1fe3477010692693d6ecb40b54d4dec1de7fb825ab6cae7263",
+      "archive_sha256": "b6b1e54b90f40b54978a98720afe1c029a2113cf4ea8263b90f2c6a3a64662ae",
+      "bundle_sha256": "1ad602fad7805d0abf40dd4d70202eb005c50d22805c3b74234a82be4093a15c",
+      "stage": "humanadapt-standard-evaluate"
+    },
+    "human_semflow_train": {
+      "report_sha256": "e990008cde1d6b5bac835df4e24823d376383bf6800fb2b30242fffbc8bb5754",
+      "archive_sha256": "fb19f2faa7829a1faecbaeeb49af4cc280542d7a5b9560efbde9b24ab4a84af6",
+      "bundle_sha256": "1ad602fad7805d0abf40dd4d70202eb005c50d22805c3b74234a82be4093a15c",
+      "stage": "humanadapt-semflow-train"
+    },
+    "human_semflow_evaluate": {
+      "report_sha256": "641332b72da839406478380772762595f0660f0e09efd580c8744089d228e3e7",
+      "archive_sha256": "2b7ee2250ca618a7b14a87a8ab4ccab611bbbaff902814cd492c128a71f4408b",
+      "bundle_sha256": "1ad602fad7805d0abf40dd4d70202eb005c50d22805c3b74234a82be4093a15c",
+      "stage": "humanadapt-semflow-evaluate"
+    },
+    "actions_frozen": {
+      "report_sha256": "6350065c8a85d63674d399192b0f630f5b7d35d0772f093deb9cb9234ada4514",
+      "archive_sha256": "020eb3923f4e29cd0666fa62ebcdc458ecfa2f373180324465e92a3a43a3767a",
+      "bundle_sha256": "c4e92a6a87dd9b4ed54120671cb2a43149255846aed1d923330cbdbdf26e8002",
+      "stage": "humanaction-frozen"
+    },
+    "actions_standard": {
+      "report_sha256": "6e3fddd17a665773b31d1c8bccf1d8a4667f6cdcc5399fa121f0c090cfda467c",
+      "archive_sha256": "1ea646552f7303b079e2128e2235f93fe8698ca107cd626a6b15e9ab26b910fe",
+      "bundle_sha256": "c4e92a6a87dd9b4ed54120671cb2a43149255846aed1d923330cbdbdf26e8002",
+      "stage": "humanaction-standard"
+    },
+    "actions_semflow": {
+      "report_sha256": "a506ab0fb617049ab14af2850a9eb3f11193c9c05dd6a9431e54c70fe694733b",
+      "archive_sha256": "603ddc7ac49041d941f422c0b9d2d55034ae48ddc5022b4701c30d5f8f8ad22a",
+      "bundle_sha256": "c4e92a6a87dd9b4ed54120671cb2a43149255846aed1d923330cbdbdf26e8002",
+      "stage": "humanaction-semflow"
+    },
+    "decision_audit": {
+      "report_sha256": "77bc50494601b4843de33bbe287b335bb63a676ae690d3da4f25aa4a42f7554d",
+      "archive_sha256": "fb034484f34d511ee62ecb72415149bdf5bc30d613d50e79a4a211728e2cd825",
+      "bundle_sha256": "81019dbbaad0af519ffff676cc7d0fdcf5d00266847664f74e4ba52b8ea0fee0",
+      "stage": "decision-audit"
+    },
+    "retention_train": {
+      "report_sha256": "1697efb7ccbed78f9bd8992a23111780e0cb708e7c7035a16a6d559200fa7037",
+      "archive_sha256": "0f48c9554d4d3923ac722a4a9801d98cfae4ca830bb4e04dae5dbcbb4675782c",
+      "bundle_sha256": "81019dbbaad0af519ffff676cc7d0fdcf5d00266847664f74e4ba52b8ea0fee0",
+      "stage": "decision-retention-train"
+    },
+    "retention_evaluate": {
+      "report_sha256": "bb1d308d21f1f256af04c7438e457612c2dc4b9194bedaa96d34d9d18c31fa7e",
+      "archive_sha256": "d942354d46267987b35774570c0a6e4dc6b624831e3e395fab4b675485494df9",
+      "bundle_sha256": "81019dbbaad0af519ffff676cc7d0fdcf5d00266847664f74e4ba52b8ea0fee0",
+      "stage": "decision-retention-evaluate"
+    },
+    "decision": {
+      "report_sha256": "d47cb2d67045be4c2e643b9968d767eb800e96befd4c4e00c5ac6de14c6e1683",
+      "archive_sha256": "1a419c40d518954d8a78dc49fe77473485a4234b179c9a84e14ec07af38b4491",
+      "bundle_sha256": "81019dbbaad0af519ffff676cc7d0fdcf5d00266847664f74e4ba52b8ea0fee0",
+      "stage": "decision-semflow"
+    },
+    "clock_audit": {
+      "report_sha256": "735585d1b047fefa76005c74cebf5e5eddb2205d8a9f4cbfb71090e0824671d8",
+      "archive_sha256": "eace79daf1951ecfa7101d4bafceed993c84f31860797ffd0030ca6be0670929",
+      "bundle_sha256": "024deec241a6d5889ac8d1ab2b7f192bc7caea0b2215c6543b6bd92f8ff1598f",
+      "stage": "clock-audit"
+    },
+    "source_simulation": {
+      "report_sha256": "cb145c278733989c047cc25a174a8b24bd3988da953ff5fc7044d7e45526955a"
+    }
+  }
+}
