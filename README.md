@@ -6,6 +6,8 @@ This pilot adapts future scene representations from three personally recorded hu
 
 **Finding:** this implementation did not demonstrate useful action adaptation. SemFlow's mean improvement over a source-retention-only control was **0.0248%**. Every human-adapted model worsened sampled source action error relative to the frozen initialization. We paused this implementation; the broader research question remains open.
 
+**AI assistance:** This is a solo project by Eduardo Mosca, developed with assistance from OpenAI Codex. Uses of “we” throughout the repository refer to the author working with that AI assistance, rather than a team of human researchers. The author is responsible for the work and its claims.
+
 ## Our egocentric demonstrations and intended LIBERO targets
 
 One personally recorded chest-level RGB clip per target. The simulator previews below are **LIBERO-90 source-dataset demonstrations of the two component tasks**, not composed LIBERO-10 target rollouts or outputs of our adapted policy.
@@ -16,7 +18,29 @@ One personally recorded chest-level RGB clip per target. The simulator previews 
 | **Cream/grey cups → left/right plates**<br>![Human cup demonstration](assets/demos/human-mugs_two_plates.gif) | **White mug → left plate**<br>![LIBERO left plate component](assets/demos/libero-mugs_two_plates-component-1.gif) | **Yellow/white mug → right plate**<br>![LIBERO right plate component](assets/demos/libero-mugs_two_plates-component-2.gif) |
 | **White bowl → drawer; close it**<br>![Human drawer demonstration](assets/demos/human-bowl_drawer_close.gif) | **Black bowl → bottom drawer**<br>![LIBERO bowl component](assets/demos/libero-bowl_drawer_close-component-1.gif) | **Close bottom drawer**<br>![LIBERO closing component](assets/demos/libero-bowl_drawer_close-component-2.gif) |
 
-The intended LIBERO-10 targets combine each row's two components. See [exact target names, full human videos, and provenance](docs/demo_showcase.md). Human adaptation ran for these three mappings; the target rollout matrix was not completed.
+The intended LIBERO-10 targets combine each row's two components. See [exact target names, full human videos, and provenance](docs/demo_showcase.md). Human adaptation ran for these three mappings. One qualitative adapted-policy attempt per target is shown below; the planned multi-seed benchmark matrix was not run.
+
+## Before and after human adaptation
+
+The side-by-side videos compare **frozen Base600 before human adaptation** (left) with **SemFlow after human adaptation** (right). Each pair uses the same target, initial-state index 0, seed 10000, action-noise sequence, ten-step sampler, controller conversion, and 400-step limit. Both models reached the step limit without simulator success on all three targets. These are qualitative attempts, not a benchmark success-rate estimate; no improvement is claimed.
+
+| Target | Before → after: learned-policy comparison | Full videos |
+|---|---|---|
+| Two foods → basket | ![Frozen Base600 versus SemFlow basket attempt](assets/rollouts/paired/basket_two_foods-comparison.gif) | [Side by side](assets/rollouts/paired/basket_two_foods-comparison.mp4) · [Before](assets/rollouts/paired/basket_two_foods-before.mp4) · [After](assets/rollouts/paired/basket_two_foods-after.mp4) |
+| Bowl → drawer; close | ![Frozen Base600 versus SemFlow drawer attempt](assets/rollouts/paired/bowl_drawer_close-comparison.gif) | [Side by side](assets/rollouts/paired/bowl_drawer_close-comparison.mp4) · [Before](assets/rollouts/paired/bowl_drawer_close-before.mp4) · [After](assets/rollouts/paired/bowl_drawer_close-after.mp4) |
+| Two mugs → respective plates | ![Frozen Base600 versus SemFlow mugs attempt](assets/rollouts/paired/mugs_two_plates-comparison.gif) | [Side by side](assets/rollouts/paired/mugs_two_plates-comparison.mp4) · [Before](assets/rollouts/paired/mugs_two_plates-before.mp4) · [After](assets/rollouts/paired/mugs_two_plates-after.mp4) |
+
+Within each model panel, the fixed agent camera is on the left and the wrist camera on the right. Full MP4s contain 401 frames at 20 Hz with no speed change. GIF previews sample approximately six frames per second with rounded timing. [Media provenance](assets/rollouts/paired/provenance.json) records the checkpoint, adapter, task, and video hashes. The source-dataset examples above remain distinct from these learned-policy target executions.
+
+The already measured before/after **offline source-validation action errors** are:
+
+| Human clip used for adaptation | Before: frozen Base600 | After: SemFlow | Change ↓ |
+|---|---:|---:|---:|
+| Box / basket mapping | 1.552688 | 1.570225 | +1.13% (worse) |
+| Drawer mapping | 1.552688 | 1.570691 | +1.16% (worse) |
+| Cups / plates mapping | 1.552688 | 1.570584 | +1.15% (worse) |
+
+Values are normalized first-eight-action MSE at ten sampling steps, averaged across the same 12 source-validation windows and four paired action-noise seeds. Each adapted model is evaluated across all six source tasks; these are not target rollout errors. The shared frozen value is repeated for comparison.
 
 ## Experiment and results
 

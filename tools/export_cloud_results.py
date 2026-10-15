@@ -14,12 +14,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path('/content/semflow-results'))
     parser.add_argument('--output', type=Path, default=Path('/content/semflow-results.tar.gz'))
+    parser.add_argument("--include-videos", action="store_true", help="Explicitly export qualitative rollout MP4s")
     args = parser.parse_args()
     root = args.root.resolve(strict=True)
     # These dedicated directories contain only outputs from our bounded probes.
     # No home, credential cache, model cache, or arbitrary /content traversal.
+    suffixes = {'.json', '.txt', '.log', '.png', '.pt'} | ({'.mp4'} if args.include_videos else set())
     files = sorted(path for path in root.rglob('*')
-                   if path.is_file() and path.suffix in {'.json', '.txt', '.log', '.png', '.pt'}
+                   if path.is_file() and path.suffix in suffixes
                    and not any(part in {'numba_cache', 'libero_config'} for part in path.relative_to(root).parts))
     if not files:
         raise RuntimeError('No probe artifacts found')

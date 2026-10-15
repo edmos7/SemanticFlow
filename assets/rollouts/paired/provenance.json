@@ -1,0 +1,142 @@
+{
+  "purpose": "Qualitative learned-policy target attempts; not a benchmark rate",
+  "paired": true,
+  "presentation_fps": 6,
+  "mp4_fps": 20,
+  "targets": {
+    "basket_two_foods": {
+      "after": {
+        "task": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+        "seed": 10000,
+        "initial_state_id": 0,
+        "checkpoint_sha256": "713c7940b5cdf629bffb9ead4c9aa8ad8ed832df71c428f376e2d7cd21056fea",
+        "adapter_sha256": "a479f70e9be50ff0f0fcf88965ed18e1a2359bb54ac647f110e060f8b7a00a22",
+        "video_sha256": "f83536ded095c38cee5c895d3a72eb6a874f6fbe1712c0afd9ddaa36f6adcb5e",
+        "steps": 400,
+        "termination": "step_limit",
+        "simulator_success": false
+      },
+      "before": {
+        "task": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+        "seed": 10000,
+        "initial_state_id": 0,
+        "checkpoint_sha256": "040a9e637c6dd621bc27efe3e70c7a4b579c698e0e02e6a1c76c09b12d124d45",
+        "adapter_sha256": "684099c4dec6bc468040a9a70b882548e0f211a29096aec2230660339193acfe",
+        "video_sha256": "f6f62ccadc2aeaea1a668c1deccc3b3ec3b3054750c12199f3aefea1fb94958d",
+        "steps": 400,
+        "termination": "step_limit",
+        "simulator_success": false
+      }
+    },
+    "bowl_drawer_close": {
+      "after": {
+        "task": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+        "seed": 10000,
+        "initial_state_id": 0,
+        "checkpoint_sha256": "713c7940b5cdf629bffb9ead4c9aa8ad8ed832df71c428f376e2d7cd21056fea",
+        "adapter_sha256": "d271961452a522d1f407713d68313cd2cac47f23a29f43faaa3ddb757ca388ff",
+        "video_sha256": "616f2ddfdd3ddc62fd5b7d9dc65f8d98a09196b925257a5572b523fbfd70a74d",
+        "steps": 400,
+        "termination": "step_limit",
+        "simulator_success": false
+      },
+      "before": {
+        "task": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+        "seed": 10000,
+        "initial_state_id": 0,
+        "checkpoint_sha256": "040a9e637c6dd621bc27efe3e70c7a4b579c698e0e02e6a1c76c09b12d124d45",
+        "adapter_sha256": "684099c4dec6bc468040a9a70b882548e0f211a29096aec2230660339193acfe",
+        "video_sha256": "723a3a02ab69c0e973e24796a93f122d4d859394f8f59ebbc7f30a475288e3e0",
+        "steps": 400,
+        "termination": "step_limit",
+        "simulator_success": false
+      }
+    },
+    "mugs_two_plates": {
+      "after": {
+        "task": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate",
+        "seed": 10000,
+        "initial_state_id": 0,
+        "checkpoint_sha256": "713c7940b5cdf629bffb9ead4c9aa8ad8ed832df71c428f376e2d7cd21056fea",
+        "adapter_sha256": "06d0b5e7983f3c3ac9f7aadab141254b9816f67bb92560f6c1702364044411e7",
+        "video_sha256": "cdd7df486d1f0d61f45994628bb2e619f424e64f0d96a7e635194e22d091bcb3",
+        "steps": 400,
+        "termination": "step_limit",
+        "simulator_success": false
+      },
+      "before": {
+        "task": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate",
+        "seed": 10000,
+        "initial_state_id": 0,
+        "checkpoint_sha256": "040a9e637c6dd621bc27efe3e70c7a4b579c698e0e02e6a1c76c09b12d124d45",
+        "adapter_sha256": "684099c4dec6bc468040a9a70b882548e0f211a29096aec2230660339193acfe",
+        "video_sha256": "220ebfed541594a1fc857db114a8e044209a2193fc852828c394170e71ab9364",
+        "steps": 400,
+        "termination": "step_limit",
+        "simulator_success": false
+      }
+    }
+  },
+  "files": {
+    "basket_two_foods-after.mp4": {
+      "sha256": "f83536ded095c38cee5c895d3a72eb6a874f6fbe1712c0afd9ddaa36f6adcb5e",
+      "bytes": 232421
+    },
+    "basket_two_foods-before.mp4": {
+      "sha256": "f6f62ccadc2aeaea1a668c1deccc3b3ec3b3054750c12199f3aefea1fb94958d",
+      "bytes": 230084
+    },
+    "basket_two_foods-comparison.gif": {
+      "sha256": "8d4f5a46cfb9b0da1c266bb7052f7d70f967c0ec7c0a485d58bc8052ed2c131a",
+      "bytes": 9739095
+    },
+    "basket_two_foods-comparison.mp4": {
+      "sha256": "e93c9129572d06e4f3108b190451a70830803cd82a2b85d7c3ebe28ff194ffcc",
+      "bytes": 432988
+    },
+    "basket_two_foods-contact-sheet.png": {
+      "sha256": "6baceccf93907885ca2ec7db79fc36e9a7bc2a92d7990d93973b7431510ec07c",
+      "bytes": 301849
+    },
+    "bowl_drawer_close-after.mp4": {
+      "sha256": "616f2ddfdd3ddc62fd5b7d9dc65f8d98a09196b925257a5572b523fbfd70a74d",
+      "bytes": 203962
+    },
+    "bowl_drawer_close-before.mp4": {
+      "sha256": "723a3a02ab69c0e973e24796a93f122d4d859394f8f59ebbc7f30a475288e3e0",
+      "bytes": 204875
+    },
+    "bowl_drawer_close-comparison.gif": {
+      "sha256": "afbbef875d71f7bad922029a6fab39efd36a20c7e82904231b42d8368547e461",
+      "bytes": 9485304
+    },
+    "bowl_drawer_close-comparison.mp4": {
+      "sha256": "92f172d64b633552001cc89a1d6735072b9359c50c6aedbee584ee55ba1937a3",
+      "bytes": 387832
+    },
+    "bowl_drawer_close-contact-sheet.png": {
+      "sha256": "5e67e4e11d03cd524ec151e45d844a4f1e69f418330d34d11bba65c66b3e174d",
+      "bytes": 229711
+    },
+    "mugs_two_plates-after.mp4": {
+      "sha256": "cdd7df486d1f0d61f45994628bb2e619f424e64f0d96a7e635194e22d091bcb3",
+      "bytes": 211159
+    },
+    "mugs_two_plates-before.mp4": {
+      "sha256": "220ebfed541594a1fc857db114a8e044209a2193fc852828c394170e71ab9364",
+      "bytes": 210344
+    },
+    "mugs_two_plates-comparison.gif": {
+      "sha256": "5a9e27785bb05e4c8e20535bf97ca1b2e6a2c522c4d9490b42094c913346c4bd",
+      "bytes": 9088600
+    },
+    "mugs_two_plates-comparison.mp4": {
+      "sha256": "36cb4a2e4a16db947f5d1e1f3a3cb586dc28e58c810c4fe7a0aa3c20b309d255",
+      "bytes": 390123
+    },
+    "mugs_two_plates-contact-sheet.png": {
+      "sha256": "ce1854cbb9f285fcce8d452b091fbceb0333686f71df047409c331e574196551",
+      "bytes": 278662
+    }
+  }
+}

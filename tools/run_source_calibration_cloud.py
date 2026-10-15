@@ -25,6 +25,8 @@ BALANCED_STAGES = ("balanced-panel-0",) + tuple(
 COMPARISON_STAGES = ("comparison-preflight",) + tuple(
     "comparison-" + arm + "-" + mode for arm in ("base", "realman") for mode in ("initial", "train", "final"))
 
+TARGET_STAGES = ("target-preflight", "target-rollouts", "target-frozen")
+
 CLOCK_STAGES = ("clock-preflight", "clock-audit")
 
 DECISION_STAGES = ("decision-preflight", "decision-audit", "decision-retention-train", "decision-retention-evaluate", "decision-semflow")
@@ -129,7 +131,7 @@ def main():
                                            "sampler-audit", "overfit", "overfit-audit",
                                            "conditioning-preflight", "conditioning-audit",
                                            "realman-preflight", "realman-audit",
-                                           "human-preflight", "human-audit") + BALANCED_STAGES + COMPARISON_STAGES + CONTINUATION_STAGES + REHEARSAL_STAGES + ACTION_STAGES + HUMAN_ADAPT_STAGES + HUMAN_ACTION_STAGES + DECISION_STAGES + CLOCK_STAGES, required=True)
+                                           "human-preflight", "human-audit") + BALANCED_STAGES + COMPARISON_STAGES + CONTINUATION_STAGES + REHEARSAL_STAGES + ACTION_STAGES + HUMAN_ADAPT_STAGES + HUMAN_ACTION_STAGES + DECISION_STAGES + CLOCK_STAGES + TARGET_STAGES, required=True)
     args = parser.parse_args()
     root, output = Path("/content/semflow"), Path("/content/semflow-results")
     token = Path("/content/semflow-hf-token")
@@ -140,6 +142,8 @@ def main():
               "storage": "Ephemeral runtime only; verified direct export to mounted SEMFLOW_DATA_ROOT required."}
     if args.stage in ("human-preflight", "human-audit") + HUMAN_ADAPT_STAGES:
         report.update(no_target_data=False, no_target_robot_data=True, human_rgb_only=True)
+    if args.stage in TARGET_STAGES:
+        report.update(no_target_data=False, no_target_robot_data=True, qualitative_target_execution=True)
     report_path = output / ("source-calibration-" + args.stage + ".json")
     started = time.monotonic()
     environment = dict(os.environ, PYTHONPATH=str(root / "src"), PYTHONDONTWRITEBYTECODE="1",
@@ -200,7 +204,7 @@ def main():
         simulator_work = Path("/content/semflow-simulator")
         native_python = native_work / "venv/bin/python"
         uv = shutil.which("uv") or str(native_work / "bootstrap/bin/uv")
-        if args.stage in ("preflight", "conditioning-preflight", "realman-preflight", "comparison-preflight", "continuation-preflight", "human-preflight", "rehearsal-preflight", "action-preflight", "humanadapt-preflight", "humanaction-preflight", "decision-preflight", "clock-preflight"):
+        if args.stage in ("preflight", "conditioning-preflight", "realman-preflight", "comparison-preflight", "continuation-preflight", "human-preflight", "rehearsal-preflight", "action-preflight", "humanadapt-preflight", "humanaction-preflight", "decision-preflight", "clock-preflight", "target-preflight"):
             prior_setup = output / "native-dependencies/egosteer_cloud_run.json"
             if prior_setup.exists():
                 if json.loads(prior_setup.read_text())["status"] != "passed":
@@ -211,7 +215,7 @@ def main():
             else:
                 run("native-setup", [sys.executable, str(root / "tools/run_egosteer_cloud.py")], 610)
             run("data-dependency", [str(uv), "pip", "install", "--python", str(native_python), "h5py==3.15.1"], 90)
-            if args.stage in ("human-preflight", "rehearsal-preflight", "action-preflight", "humanadapt-preflight", "humanaction-preflight", "decision-preflight", "clock-preflight"):
+            if args.stage in ("human-preflight", "rehearsal-preflight", "action-preflight", "humanadapt-preflight", "humanaction-preflight", "decision-preflight", "clock-preflight", "target-preflight"):
                 run("video-dependency", [str(uv), "pip", "install", "--python", str(native_python),
                     "av==15.1.0", "Pillow==12.1.1"], 90)
             run("unit-tests", [str(native_python), str(root / "tools/run_cloud_tests.py")], 180)
@@ -220,6 +224,11 @@ def main():
                 report.update(status="passed", optimizer_steps=0, rollouts=0)
                 return
             run("simulator-setup", [sys.executable, str(root / "tools/run_libero_cloud.py"), "--install-only"], 310)
+            if args.stage == "target-preflight":
+                report.update(status="passed", optimizer_steps=0, rollouts=0)
+                return
+        elif args.stage in ("target-rollouts", "target-frozen"):
+            require_export(output, "target-preflight", report["bundle_sha256"], "passed")
         elif args.stage in HUMAN_ADAPT_STAGES:
             previous = HUMAN_ADAPT_STAGES[HUMAN_ADAPT_STAGES.index(args.stage)-1]
             require_export(output, previous, report["bundle_sha256"], "passed")
@@ -273,6 +282,26 @@ def main():
             require_export(output, prior_stage, report["bundle_sha256"], prior_status)
         calibration = output / "calibration"
         calibration.mkdir(exist_ok=True)
+        if args.stage in ("target-rollouts", "target-frozen"):
+            inner_path = calibration / args.stage / "report.json"
+            command = [str(native_python), str(root / "tools/rollout_human_targets.py"),
+                "--request", "/content/semflow-rehearsal-request.json",
+                "--panel-request", "/content/semflow-human-action-request.json", "--input-root", "/content",
+                "--index", "/content/semflow-source-index.json",
+                "--checkpoint", "/content/semflow-diagnostic-checkpoint.pt",
+                "--checkpoint-receipt", "/content/semflow-checkpoint-receipt.json",
+                "--upstream-root", str(native_work / "egosteer"),
+                "--simulator-python", str(simulator_work / "venv/bin/python"),
+                "--libero-checkout", str(simulator_work / "LIBERO"), "--output", str(inner_path)]
+            if args.stage == "target-frozen":
+                command += ["--condition", "frozen", "--after-report", "/content/semflow-after-report.json",
+                            "--after-receipt", "/content/semflow-after-receipt.json"]
+            run(args.stage, command, 2420)
+            inner = json.loads(inner_path.read_text())
+            report.update(status="passed" if inner["status"] == "completed" else "incomplete",
+                optimizer_steps=0, rollouts=len(inner["rollouts"]),
+                comparison_report_sha256=hashlib.sha256(inner_path.read_bytes()).hexdigest())
+            return
         if args.stage in CLOCK_STAGES:
             inner_path = calibration / "clock-audit.json"
             command = [str(native_python), str(root / "tools/probe_sampler_clock.py"),
@@ -555,7 +584,8 @@ def main():
         report["temporary_token_removed"] = not token.exists()
         report["seconds"] = time.monotonic() - started
         report_path.write_text(json.dumps(report, indent=2) + "\n")
-        exported = subprocess.run([sys.executable, str(root / "tools/export_cloud_results.py")],
+        exported = subprocess.run([sys.executable, str(root / "tools/export_cloud_results.py"),
+            *(["--include-videos"] if args.stage in TARGET_STAGES else [])],
             capture_output=True, text=True, timeout=120, check=True)
         print(exported.stdout, flush=True)
     print(json.dumps(report), flush=True)

@@ -23,7 +23,7 @@ PROBE_FILES = ('build_cloud_bundle.py', 'probe_environment.py', 'probe_egosteer.
                'run_cloud_tests.py', 'export_cloud_results.py', 'diagnose_source_controller.py',
                'probe_source_actions.py', 'train_balanced_source.py', 'probe_source_conditioning.py',
                'probe_realman.py', 'compare_source_initializations.py', 'continue_realman_source.py',
-               'probe_human_inputs.py', 'rehearse_adaptation.py', 'probe_adapted_actions.py', 'adapt_human.py', 'probe_human_actions.py', 'decision_diagnostics.py', 'probe_sampler_clock.py', 'reproduce_results.py')
+               'probe_human_inputs.py', 'rehearse_adaptation.py', 'probe_adapted_actions.py', 'adapt_human.py', 'probe_human_actions.py', 'decision_diagnostics.py', 'probe_sampler_clock.py', 'reproduce_results.py', 'rollout_human_targets.py')
 
 
 def selected_files(root: Path) -> list[Path]:
