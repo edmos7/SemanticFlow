@@ -2,18 +2,50 @@
 
 Can a robot learn something useful about how the world changes by watching a person do a task once?
 
-World-action models (WAMs) combine learning how the world changes with learning how to act. EgoSteer pairs an action expert with a world expert trained to predict future DINOv3 visual features as an auxiliary objective. We treat these features as a possible proxy for scene meaning: “semantic flow” is how a compact, task-conditioned representation of them changes over time. SemFlow adapts EgoSteer to learn these changes from human video and explicitly feeds its predicted scene representations into action generation. Whether those representations capture useful task semantics remains an open question.
+World-action models (WAMs) combine learning how the world changes with learning how to act. EgoSteer pairs an action expert with a world expert trained to predict future DINOv3 visual features—numerical descriptions of image regions—as an additional training task. We treat these features as a possible proxy for scene meaning: “semantic flow” is how a compact representation of them guided by the task instruction changes over time. SemFlow adapts EgoSteer to learn these changes from human video and explicitly feeds its predicted scene representations into action generation. Whether those representations capture useful task semantics remains an open question.
 
 ## TL;DR
 
 - **The idea:** a human and a robot move differently, but they can cause similar changes: a cup ends up on a plate, an object goes into a drawer, or the drawer closes. We asked whether learning to predict those changes from human video could help a robot act.
-- **The model:** we started with pretrained EgoSteer and used frozen DINOv3 visual features to represent scenes. Robot demonstrations from six LIBERO tasks taught the model how to work with Panda robot states and actions, and connected its scene predictions to action generation. This starting point still had weak robot control.
+- **The model:** we started with pretrained EgoSteer and used frozen DINOv3 visual features to represent scenes. Robot demonstrations from six initial LIBERO tasks (our “source” tasks) taught the model how to work with Panda robot states and actions, and connected its scene predictions to action generation. This starting point still had weak robot control.
 - **The training:** we recorded three first-person RGB videos, one per intended task, and adapted a small part of the model using video and task instructions. The human clips supplied no action labels. No robot demonstrations of the intended target tasks were used for adaptation.
-- **The comparison:** ordinary adaptation learned to predict future visual features. SemFlow added losses for a compact scene representation and how it changes over time, with the aim of learning task-relevant changes. Both also rehearsed source robot actions. We compared them with the unchanged model and with source rehearsal alone, first at 60 updates and then at 300.
+- **The comparison:** ordinary adaptation learned to predict future visual features. SemFlow added losses for a compact scene representation and how it changes over time, with the aim of learning task-relevant changes. Both also continued training on recorded commands from those source robot tasks to limit forgetting. We compared them with the unchanged model and with source rehearsal alone, first at 60 updates and then at 300.
 - **What we saw:** at 300 updates, SemFlow's error against recorded source robot actions was about 3.7% higher than the unchanged model's, and very close to both adaptation controls. Earlier simulator attempts, one per target for each of the frozen and SemFlow models, completed none of the three tasks. We stopped at 300 under the experiment's continuation rules.
 - **What we can conclude:** we have not shown a benefit from this setup. Action error is only a diagnostic: matching recorded actions more closely does not necessarily mean completing tasks more often. With weak starting control, one human clip per task, one training seed, and no completed multi-seed target benchmark, we cannot reliably judge whether SemFlow improves robot task performance. The broader research question remains open.
 
 **AI assistance:** This is a solo project by Eduardo Mosca, developed with assistance from OpenAI Codex. Uses of “we” throughout the repository refer to the author working with that AI assistance, rather than a team of human researchers. The author is responsible for the work and its claims.
+
+## Semantic flow as a training objective
+
+A few terms used below:
+
+| Term | Meaning here |
+|---|---|
+| **Raw features** | DINOv3's numerical descriptions of image patches, before we compress them into scene tokens. “Raw” refers to these features, not image pixels. |
+| **Future features** | Those descriptions for a later frame. During training we extract them from the recorded future frame; the model learns to predict them using only what it has observed so far. “Raw” and “future” describe different aspects of the same features. |
+| **Scene tokens** | Sixteen learned vectors that summarize the image features using the task instruction. Their changes over time are what we call semantic flow. |
+| **Source actions** | Recorded robot commands from the six initial LIBERO tasks. Continuing to train on them is called rehearsal or retention; it is intended to limit forgetting during human-video adaptation. |
+| **Teacher and targets** | The fixed DINOv3 encoder and scene readout produce reference representations from recorded frames. These references are the targets that predictions are trained to match. |
+
+We ask the model to predict both **the representation of each future scene** and **how that representation changes**. MSE means mean squared error: the average squared difference between predicted and reference numbers:
+
+$$
+\mathcal{L}_{\mathrm{sem}} =
+\underbrace{\operatorname{MSE}(\hat z, z)}_{\text{match future scene states}}
++ \underbrace{\operatorname{MSE}(\Delta\hat z, \Delta z)}_{\text{match changes between future states}}.
+$$
+
+Here, $z$ is the reference scene representation of actual future frames, and $\hat z$ is the model's prediction. Both are put on a common scale using the mean and standard deviation of each feature coordinate, measured on source robot training data. The state term averages over the 0.5, 1, and 2 second horizons; the change term compares adjacent horizons, with $\Delta z_i = z_{i+1}-z_i$. These are feature differences, not optical flow or rates divided by elapsed time.
+
+The complete adaptation objective is:
+
+$$
+\mathcal{L}_{\mathrm{adapt}} = 0.1\,\mathcal{L}_{\mathrm{raw\ DINO}}
++ \lambda\,\mathcal{L}_{\mathrm{sem}}
++ \mathcal{L}_{\mathrm{source\ actions}}.
+$$
+
+The first term compares predicted DINOv3 patch features with those extracted from actual future frames. The last term is the flow-matching loss used to train robot action generation on source demonstrations; it is not a loss on human movements. SemFlow adds the equally weighted state and change terms above, with $\lambda$ calibrated on source training examples. Standard adaptation omits the semantic term; retention-only uses just source-action rehearsal. The reference targets stay fixed during adaptation; gradients update the prediction side rather than changing those targets. The aim is to learn meaningful scene changes from human video, but this objective alone does not establish that the representation is semantic or useful for control. See the [loss implementation](src/semflow/models/losses.py) and [adaptation objective](src/semflow/models/adaptation.py).
 
 ## Human demonstrations and intended robot tasks
 
