@@ -31,8 +31,8 @@ We ask the model to predict both **the representation of each future scene** and
 
 ```math
 \mathcal{L}_{\mathrm{sem}} =
-\underbrace{\operatorname{MSE}(\hat z, z)}_{\text{match future scene states}}
-+ \underbrace{\operatorname{MSE}(\Delta\hat z, \Delta z)}_{\text{match changes between future states}}.
+\underbrace{\mathrm{MSE}(\hat z, z)}_{\text{match future scene states}}
++ \underbrace{\mathrm{MSE}(\Delta\hat z, \Delta z)}_{\text{match changes between future states}}.
 ```
 
 Here, $`z`$ is the reference scene representation of actual future frames, and $`\hat z`$ is the model's prediction. Both are put on a common scale using the mean and standard deviation of each feature coordinate, measured on source robot training data. The state term averages over the 0.5, 1, and 2 second horizons; the change term compares adjacent horizons, with $`\Delta z_i = z_{i+1}-z_i`$. These are feature differences, not optical flow or rates divided by elapsed time.
