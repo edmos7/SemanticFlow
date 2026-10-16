@@ -19,7 +19,7 @@ World-action models (WAMs) combine learning how the world changes with learning 
 
 The idea came to me while reading about how egocentric videos are used to train robot policies, particularly [What Matters When Cotraining Robot Manipulation Policies on Everyday Human Videos?](https://arxiv.org/abs/2606.06627). I was pretty stumped that regardless of all the effort that is going into leveraging human video for robotics, tracking quality and differences in motion could still break transfer if the data was not of super high quality.
 
-But more than that it made me think: "why are people trying to teach robots how to move like humans? The information is already in thre, without the need for motion and actions, the robot should exploit the world knowledge that it can from ego videos to understand that it can too interact with the world that way and link actual robotic action back to it"
+But more than that it made me think: "why are people trying to teach robots how to move like humans? The information is already in there, without the need for motion and actions, the robot should exploit the world knowledge that it can extract from ego videos to understand that it can too interact with the world that way and link actual robotic action back to it"
 
 From there came the idea of using semantics, and modeling of the world knowledge as "how semantics should/could change in the future", therefore **changes in semantics throughout a task and interaction: semantic flow**. DINOv3 features became the practical proxy for those semantics.
 
