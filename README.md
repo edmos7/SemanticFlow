@@ -1,17 +1,33 @@
 # SemanticFlow (SemFlow)
 
-Can a robot learn something useful about how the world changes by watching a person do a task once?
+Can a world-action model (WAM) learn useful scene changes from a single human video, then use that knowledge to guide robot actions?
+
+SemFlow explores this link between predicting the world and acting in it. We extend [EgoSteer](https://github.com/egosteer/egosteer), a pretrained world-model-enhanced action policy, so its predicted future scene features are explicitly available when generating actions.
 
 ## TL;DR
 
 - **The idea:** a human and a robot move differently, but they can cause similar changes: a cup ends up on a plate, an object goes into a drawer, or the drawer closes. We asked whether learning to predict those changes from human video could help a robot act.
-- **The model:** we started with pretrained EgoSteer and used frozen DINOv3 visual features to represent scenes. Robot demonstrations from six LIBERO tasks taught the model how to work with Panda robot states and actions, and connected its scene predictions to action generation. This starting point still had weak robot control.
+- **The model:** we started with EgoSteer-3B-Base. Its world expert predicts future DINOv3 visual features; our interface turns them into compact scene tokens and feeds them to the action expert. Robot demonstrations from six LIBERO tasks trained this interface and the Panda state/action mappings. This starting point still had weak robot control.
 - **The training:** we recorded three first-person RGB videos, one per intended task, and adapted a small part of the model using video and task instructions. The human clips supplied no action labels. No robot demonstrations of the intended target tasks were used for adaptation.
-- **The comparison:** ordinary adaptation learned to predict future visual features. SemFlow added losses for a compact scene representation and how it changes over time, with the aim of learning task-relevant changes. Both also rehearsed source robot actions. We compared them with the unchanged model and with source rehearsal alone, first at 60 updates and then at 300.
+- **The comparison:** ordinary adaptation learned to predict future DINOv3 features. SemFlow added losses on the scene tokens and their changes over time, treating them as a possible proxy for task meaning. Both also rehearsed source robot actions. We compared them with the unchanged model and with source rehearsal alone, first at 60 updates and then at 300.
 - **What we saw:** at 300 updates, SemFlow's error against recorded source robot actions was about 3.7% higher than the unchanged model's, and very close to both adaptation controls. Earlier simulator attempts, one per target for each of the frozen and SemFlow models, completed none of the three tasks. We stopped at 300 under the experiment's continuation rules.
 - **What we can conclude:** we have not shown a benefit from this setup. Action error is only a diagnostic: matching recorded actions more closely does not necessarily mean completing tasks more often. With weak starting control, one human clip per task, one training seed, and no completed multi-seed target benchmark, we cannot reliably judge whether SemFlow improves robot task performance. The broader research question remains open.
 
 **AI assistance:** This is a solo project by Eduardo Mosca, developed with assistance from OpenAI Codex. Uses of “we” throughout the repository refer to the author working with that AI assistance, rather than a team of human researchers. The author is responsible for the work and its claims.
+
+## Design choices: why these predictions might help
+
+[DINOv3](https://github.com/facebookresearch/dinov3) learns visual features that support tasks such as semantic segmentation and object correspondence. That motivates our working assumption: its features may describe useful aspects of objects and scenes beyond their exact pixels. If a human and a robot cause similar scene changes, predicting those changes might offer a way to learn from human video without translating human motion into robot commands.
+
+We compress the visual features into 16 scene tokens, guided by the task instruction. SemFlow trains both the predicted tokens and their changes across 0.5, 1, and 2 seconds. Here, “semantic flow” means change in this learned representation, not optical flow. We have not established that the tokens isolate task meaning: camera motion, appearance, and occlusion can also change them.
+
+- **Predict features rather than pixels:** this builds on EgoSteer's existing world expert and avoids training a video generator. The tradeoff is that the model does not directly produce viewable future video.
+- **Make forecasts available during control:** a learned interface lets the action expert attend to predicted scene tokens. These forecasts use observed inputs; they do not simulate candidate action plans.
+- **Keep the comparison controlled:** all methods use the same starting model, adapter capacity, and forecast horizons. The feature teacher and target scene readout stay fixed during human adaptation, so the training targets do not move with the model. Source-action rehearsal is intended to limit forgetting; the retention-only control tests what rehearsal alone explains.
+
+**What worked:** training and checkpoint recovery completed, and diagnostic interventions showed that changing the predicted futures changed generated actions. This establishes a working connection between forecasting and action generation, not useful robot control.
+
+**What did not work, or remains unclear:** SemFlow did not improve the measured source-action agreement over the controls, and the limited simulator attempts showed no task successes. Removing the whole scene interface lowered action error, which makes the interface worth investigating, but does not identify the cause. We still lack evidence that the proposed semantic representation helps task performance or transfers from human to robot scenes.
 
 ## Human demonstrations and intended robot tasks
 
