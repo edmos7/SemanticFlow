@@ -1,16 +1,21 @@
 # SemanticFlow (SemFlow)
 
-**Research question:** can an action model learn useful world knowledge from human video, then exploit it for downstream action adaptation?
+Can a robot learn something useful about how the world changes by watching a person do a task once?
 
-This pilot adapts future scene representations from three personally recorded human RGB clips and ordinary task instructions. It does not retarget human movements into robot actions. A source-calibrated EgoSteer model predicts future features; a learned interface exposes those predictions to Panda action generation. Source robot demonstrations are required for calibration.
+## TL;DR
 
-**Finding:** this implementation did not demonstrate useful action adaptation. SemFlow's mean improvement over a source-retention-only control was **0.0248%**. Every human-adapted model worsened sampled source action error relative to the frozen initialization. We paused this implementation; the broader research question remains open.
+- **The idea:** a human and a robot move differently, but they can cause similar changes: a cup ends up on a plate, an object goes into a drawer, or the drawer closes. We asked whether learning to predict those changes from human video could help a robot act.
+- **The model:** we started with pretrained EgoSteer and used frozen DINOv3 visual features to represent scenes. Robot demonstrations from six LIBERO tasks taught the model how to work with Panda robot states and actions, and connected its scene predictions to action generation. This starting point still had weak robot control.
+- **The training:** we recorded three first-person RGB videos, one per intended task, and adapted a small part of the model using video and task instructions. The human clips supplied no action labels. No robot demonstrations of the intended target tasks were used for adaptation.
+- **The comparison:** ordinary adaptation learned to predict future visual features. SemFlow added losses for a compact scene representation and how it changes over time, with the aim of learning task-relevant changes. Both also rehearsed source robot actions. We compared them with the unchanged model and with source rehearsal alone, first at 60 updates and then at 300.
+- **What we saw:** at 300 updates, SemFlow's error against recorded source robot actions was about 3.7% higher than the unchanged model's, and very close to both adaptation controls. Earlier simulator attempts, one per target for each of the frozen and SemFlow models, completed none of the three tasks. We stopped at 300 under the experiment's continuation rules.
+- **What we can conclude:** we have not shown a benefit from this setup. Action error is only a diagnostic: matching recorded actions more closely does not necessarily mean completing tasks more often. With weak starting control, one human clip per task, one training seed, and no completed multi-seed target benchmark, we cannot reliably judge whether SemFlow improves robot task performance. The broader research question remains open.
 
 **AI assistance:** This is a solo project by Eduardo Mosca, developed with assistance from OpenAI Codex. Uses of “we” throughout the repository refer to the author working with that AI assistance, rather than a team of human researchers. The author is responsible for the work and its claims.
 
-## Our egocentric demonstrations and intended LIBERO targets
+## Human demonstrations and intended robot tasks
 
-One personally recorded chest-level RGB clip per target. The simulator previews below are **LIBERO-90 source-dataset demonstrations of the two component tasks**, not composed LIBERO-10 target rollouts or outputs of our adapted policy.
+Each row pairs one chest-level human video with examples of the two robot skills needed for the intended task. The robot previews are **recorded LIBERO-90 dataset demonstrations**; they show the component skills, not our policy performing the combined task.
 
 | Human input used for adaptation | LIBERO component 1 — dataset example | LIBERO component 2 — dataset example |
 |---|---|---|
@@ -18,50 +23,47 @@ One personally recorded chest-level RGB clip per target. The simulator previews 
 | **Cream/grey cups → left/right plates**<br>![Human cup demonstration](assets/demos/human-mugs_two_plates.gif) | **White mug → left plate**<br>![LIBERO left plate component](assets/demos/libero-mugs_two_plates-component-1.gif) | **Yellow/white mug → right plate**<br>![LIBERO right plate component](assets/demos/libero-mugs_two_plates-component-2.gif) |
 | **White bowl → drawer; close it**<br>![Human drawer demonstration](assets/demos/human-bowl_drawer_close.gif) | **Black bowl → bottom drawer**<br>![LIBERO bowl component](assets/demos/libero-bowl_drawer_close-component-1.gif) | **Close bottom drawer**<br>![LIBERO closing component](assets/demos/libero-bowl_drawer_close-component-2.gif) |
 
-The intended LIBERO-10 targets combine each row's two components. See [exact target names, full human videos, and provenance](docs/demo_showcase.md). Human adaptation ran for these three mappings. One qualitative adapted-policy attempt per target is shown below; the planned multi-seed benchmark matrix was not run.
+The intended LIBERO-10 tasks combine each row's two skills. See [task names, full human videos, and provenance](docs/demo_showcase.md). We adapted a separate model for each human clip. The action-error comparison below tests those models on the original source robot tasks; the earlier simulator attempts are linked separately.
 
-## Before and after human adaptation
+## Results: action error and simulator attempts
 
-The side-by-side videos compare **frozen Base600 before human adaptation** (left) with **SemFlow after human adaptation** (right). Each pair uses the same target, initial-state index 0, seed 10000, action-noise sequence, ten-step sampler, controller conversion, and 400-step limit. Both models reached the step limit without simulator success on all three targets. These are qualitative attempts, not a benchmark success-rate estimate; no improvement is claimed.
+The table asks a narrow question: after adaptation, how closely do generated actions match recorded actions on held-out examples from the six source tasks? All models start from the same checkpoint and use the same evaluation examples and random noise. Each row names the human clip used for adaptation, not the robot task being tested. “Retention only” means continued source robot training without human-video adaptation.
 
-| Target | Before → after: learned-policy comparison | Full videos |
-|---|---|---|
-| Two foods → basket | ![Frozen Base600 versus SemFlow basket attempt](assets/rollouts/paired/basket_two_foods-comparison.gif) | [Side by side](assets/rollouts/paired/basket_two_foods-comparison.mp4) · [Before](assets/rollouts/paired/basket_two_foods-before.mp4) · [After](assets/rollouts/paired/basket_two_foods-after.mp4) |
-| Bowl → drawer; close | ![Frozen Base600 versus SemFlow drawer attempt](assets/rollouts/paired/bowl_drawer_close-comparison.gif) | [Side by side](assets/rollouts/paired/bowl_drawer_close-comparison.mp4) · [Before](assets/rollouts/paired/bowl_drawer_close-before.mp4) · [After](assets/rollouts/paired/bowl_drawer_close-after.mp4) |
-| Two mugs → respective plates | ![Frozen Base600 versus SemFlow mugs attempt](assets/rollouts/paired/mugs_two_plates-comparison.gif) | [Side by side](assets/rollouts/paired/mugs_two_plates-comparison.mp4) · [Before](assets/rollouts/paired/mugs_two_plates-before.mp4) · [After](assets/rollouts/paired/mugs_two_plates-after.mp4) |
+| Human adaptation mapping | Frozen | Standard 300 | SemFlow 300 | Retention only 300 | Change in error vs frozen |
+|---|---:|---:|---:|---:|---:|
+| Box / basket | 1.552688 | 1.610968 | 1.610588 | 1.609951 | +3.73% |
+| Bowl / drawer | 1.552688 | 1.610508 | 1.609491 | 1.609951 | +3.66% |
+| Cups / plates | 1.552688 | 1.609731 | 1.610291 | 1.609951 | +3.71% |
 
-Within each model panel, the fixed agent camera is on the left and the wrist camera on the right. Full MP4s contain 401 frames at 20 Hz with no speed change. GIF previews sample approximately six frames per second with rounded timing. [Media provenance](assets/rollouts/paired/provenance.json) records the checkpoint, adapter, task, and video hashes. The source-dataset examples above remain distinct from these learned-policy target executions.
+The numbers are normalized action MSE (lower means closer to the recorded actions), measured over the first eight actions and all seven action dimensions. We used 12 held-out windows, four paired noise seeds, and ten sampling steps. These noise seeds do not represent independent training runs. The shared frozen and retention-only controls are repeated for comparison.
 
-The already measured before/after **offline source-validation action errors** are:
+SemFlow did not meet the experiment's thresholds for continuing to 600 updates, based on action error and forecast fit. That was a rule for deciding whether to spend more compute, not a test of robot task success. The bundled reproduction command currently covers the 60-update results; the 300-update evaluation exports are not yet included.
 
-| Human clip used for adaptation | Before: frozen Base600 | After: SemFlow | Change ↓ |
-|---|---:|---:|---:|
-| Box / basket mapping | 1.552688 | 1.570225 | +1.13% (worse) |
-| Drawer mapping | 1.552688 | 1.570691 | +1.16% (worse) |
-| Cups / plates mapping | 1.552688 | 1.570584 | +1.15% (worse) |
+The earlier simulator comparisons are available here: [basket](assets/rollouts/paired/basket_two_foods-comparison.mp4), [drawer](assets/rollouts/paired/bowl_drawer_close-comparison.mp4), and [mugs](assets/rollouts/paired/mugs_two_plates-comparison.mp4). Each video compares the frozen model with the earlier SemFlow model. Neither completed the task within 400 steps. These were single attempts, not an evaluation of the 300-update models or enough trials to estimate success rates. See [rollout documentation](docs/target_rollouts.md) and [media provenance](assets/rollouts/paired/provenance.json).
 
-Values are normalized first-eight-action MSE at ten sampling steps, averaged across the same 12 source-validation windows and four paired action-noise seeds. Each adapted model is evaluated across all six source tasks; these are not target rollout errors. The shared frozen value is repeated for comparison.
+<details>
+<summary>Earlier 60-update results and diagnostic checks</summary>
 
-## Experiment and results
+Only a shared rank-8 adapter (about 1.6 million parameters) was trained. Source robot data contained 248 training episodes and 52 validation episodes across six tasks.
 
-Starting from the same source-calibrated checkpoint, we compared frozen inference, standard future-feature adaptation, and semantic-state/transition adaptation (SemFlow). Each human task had one clip, one seed, and 60 updates per method. Only a shared rank-8 adapter with 1,605,632 parameters was adapted.
-
-Source data comprised 248 training and 52 validation robot episodes across six tasks. The action panel sampled 12 validation windows with four paired action-noise seeds. These are not four independent training runs.
-
-| Primary offline endpoint | Normalized first-eight-action MSE ↓ |
+| Offline action check at 60 updates | Normalized action MSE ↓ |
 |---|---:|
-| Source training-mean baseline | 1.036449 |
-| Frozen common model | 1.552688 |
-| Source-retention-only control | 1.570889 |
+| Always predict the source training-mean action | 1.036449 |
+| Frozen starting model | 1.552688 |
+| Source rehearsal alone | 1.570889 |
 | SemFlow after each human clip | 1.570225–1.570691 |
 
 ![Action adaptation and scene-conditioning diagnostics](assets/figures/action_diagnostics.png)
 
-Bypassing the entire scene conditioner lowered frozen error to 1.285209, about 17%, but still lost to the mean baseline. This removes current and future scene injection together; it does not isolate the forecast contribution. An earlier source simulator evaluation completed 17 trials with zero successes before timing out. No human-adapted target-task success result is claimed.
+Removing the entire scene-conditioning interface lowered frozen action error by about 17%, to 1.285209. This suggests the interface deserves investigation, but it removes both current and predicted scene information, so it does not tell us whether the future predictions themselves helped. The mean-action baseline still had lower error; that does not make it a successful robot controller.
 
-See the [research report and decision chain](docs/research_report.md).
+An earlier source-task simulator evaluation completed 17 trials with no successes before timing out. Together with the limited target attempts, this leaves us without a strong starting controller or a completed task-performance benchmark.
 
-## Reproduce the numbers
+See the [research report](docs/research_report.md) for the initial experiment, detailed checks, and possible explanations.
+
+</details>
+
+## Reproduce the initial results
 
 With Python 3.10 or later, from the repository root:
 
@@ -69,7 +71,7 @@ With Python 3.10 or later, from the repository root:
 python3 tools/reproduce_results.py --results results
 ```
 
-This standard-library command verifies evidence hashes and paired sample coverage, and recomputes the diagnostic decision. It does not rerun training or simulation. To regenerate the figure, install Matplotlib and NumPy, then run:
+This command checks the bundled evidence and recomputes the initial 60-update diagnostics. It does not rerun training or simulation, or reproduce the later 300-update table. To regenerate the figure, install Matplotlib and NumPy, then run:
 
 ```bash
 python3 tools/plot_submission.py
@@ -87,6 +89,6 @@ See [reproducibility and v0 limits](docs/reproducibility.md) for evidence conten
 
 **Simulation-only: no robot hardware was available.** The application allowed two weeks, with a deadline of 16 October 2026, 23:59 BST. GPU experiments used a cloud A100 80 GB. Measured human-training peak allocation was 7.27 GiB; this is not a minimum GPU requirement. See [project information, time, and compute](docs/project_constraints.md).
 
-This v0 includes research code, verified numerical evidence, a reproducible figure, and the experiment narrative. The three human videos and source-component previews are included. A clean-machine end-to-end training recipe remains pending. Human forecast losses measure fit to overlapping training-clip windows, not held-out human generalization. The planned multi-seed target rollout matrix was not run.
+This v0 includes research code, verified numerical evidence, a reproducible figure, and the experiment narrative. The three human videos and source-component previews are included. A clean-machine end-to-end training recipe remains pending. The human-video prediction losses were measured on overlapping windows from the training clips, so they do not show generalization to new human videos. The planned multi-seed target rollout matrix was not run.
 
 Upstream EgoSteer notices are preserved under [licenses/egosteer](licenses/egosteer/NOTICE). Model and dataset access and licenses apply separately. No project-wide reuse license has been selected for v0.
