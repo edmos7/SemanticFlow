@@ -29,23 +29,23 @@ A few terms used below:
 
 We ask the model to predict both **the representation of each future scene** and **how that representation changes**. MSE means mean squared error: the average squared difference between predicted and reference numbers:
 
-$$
+```math
 \mathcal{L}_{\mathrm{sem}} =
 \underbrace{\operatorname{MSE}(\hat z, z)}_{\text{match future scene states}}
 + \underbrace{\operatorname{MSE}(\Delta\hat z, \Delta z)}_{\text{match changes between future states}}.
-$$
+```
 
-Here, $z$ is the reference scene representation of actual future frames, and $\hat z$ is the model's prediction. Both are put on a common scale using the mean and standard deviation of each feature coordinate, measured on source robot training data. The state term averages over the 0.5, 1, and 2 second horizons; the change term compares adjacent horizons, with $\Delta z_i = z_{i+1}-z_i$. These are feature differences, not optical flow or rates divided by elapsed time.
+Here, $`z`$ is the reference scene representation of actual future frames, and $`\hat z`$ is the model's prediction. Both are put on a common scale using the mean and standard deviation of each feature coordinate, measured on source robot training data. The state term averages over the 0.5, 1, and 2 second horizons; the change term compares adjacent horizons, with $`\Delta z_i = z_{i+1}-z_i`$. These are feature differences, not optical flow or rates divided by elapsed time.
 
 The complete adaptation objective is:
 
-$$
+```math
 \mathcal{L}_{\mathrm{adapt}} = 0.1\,\mathcal{L}_{\mathrm{raw\ DINO}}
 + \lambda\,\mathcal{L}_{\mathrm{sem}}
 + \mathcal{L}_{\mathrm{source\ actions}}.
-$$
+```
 
-The first term compares predicted DINOv3 patch features with those extracted from actual future frames. The last term is the flow-matching loss used to train robot action generation on source demonstrations; it is not a loss on human movements. SemFlow adds the equally weighted state and change terms above, with $\lambda$ calibrated on source training examples. Standard adaptation omits the semantic term; retention-only uses just source-action rehearsal. The reference targets stay fixed during adaptation; gradients update the prediction side rather than changing those targets. The aim is to learn meaningful scene changes from human video, but this objective alone does not establish that the representation is semantic or useful for control. See the [loss implementation](src/semflow/models/losses.py) and [adaptation objective](src/semflow/models/adaptation.py).
+The first term compares predicted DINOv3 patch features with those extracted from actual future frames. The last term is the flow-matching loss used to train robot action generation on source demonstrations; it is not a loss on human movements. SemFlow adds the equally weighted state and change terms above, with $`\lambda`$ calibrated on source training examples. Standard adaptation omits the semantic term; retention-only uses just source-action rehearsal. The reference targets stay fixed during adaptation; gradients update the prediction side rather than changing those targets. The aim is to learn meaningful scene changes from human video, but this objective alone does not establish that the representation is semantic or useful for control. See the [loss implementation](src/semflow/models/losses.py) and [adaptation objective](src/semflow/models/adaptation.py).
 
 ## Human demonstrations and intended robot tasks
 
